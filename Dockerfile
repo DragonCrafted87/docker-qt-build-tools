@@ -30,20 +30,20 @@ RUN git clone git://code.qt.io/qt/qt5.git qt && \
     git checkout v6.2.1 && \
     perl init-repository --module-subset=essential,addon,-qtwebengine,-qtsensors,-qtserialbus,-qtserialport
 
-RUN powershell -NoLogo -Command "
-    mkdir qt-build/debug &&
-    cd qt-build/debug &&
-    ..\..\qt\configure.bat -debug -shared -c++std c++14 -nomake examples -nomake tests -nomake tools &&
-    cmake --build . --parallel 8 &&
-    cmake --install .
+RUN powershell -NoLogo -Command " \
+    mkdir qt-build/debug && \
+    cd qt-build/debug && \
+    ..\..\qt\configure.bat -debug -shared -c++std c++14 -nomake examples -nomake tests -nomake tools && \
+    cmake --build . --parallel 8 && \
+    cmake --install . \
     "
 
-RUN powershell -NoLogo -Command "
-    mkdir qt-build/release &&
-    cd qt-build/release &&
-    ..\..\qt\configure.bat -release -static -optimize-size -c++std c++14 -nomake examples -nomake tests -nomake tools &&
-    cmake --build . --parallel 8 &&
-    cmake --install .
+RUN powershell -NoLogo -Command " \
+    mkdir qt-build/release && \
+    cd qt-build/release && \
+    ..\..\qt\configure.bat -release -static -optimize-size -c++std c++14 -nomake examples -nomake tests -nomake tools && \
+    cmake --build . --parallel 8 && \
+    cmake --install . \
     "
 
 RUN powershell -NoLogo -Command "$Env:Path"
