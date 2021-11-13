@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:20H2
+FROM mcr.microsoft.com/windows/servercore:20H2 AS llvmtools
 # https://hub.docker.com/_/microsoft-windows-servercore
 
 ENV SCOOP "C:\scoop"
@@ -19,17 +19,19 @@ RUN scoop install aria2 && \
     python \
     && \
     scoop bucket add dorado https://github.com/chawyehsu/dorado && \
-    scoop install dorado/llvm-mingw  && \
+    scoop install winlibs-mingw-llvm-ucrt  && \
     scoop uninstall aria2 && \
     scoop cache rm *
 
-ENV LLVM_INSTALL_DIR="C:\scoop\apps\llvm-mingw\current"
+ENV LLVM_INSTALL_DIR="C:\scoop\apps\winlibs-mingw-llvm-ucrt\current"
 
+FROM llvmtools AS qt_6_2_1_source
 RUN git clone git://code.qt.io/qt/qt5.git qt && \
     cd qt && \
     git checkout v6.2.1 && \
     perl init-repository --module-subset=essential,addon,-qtwebengine,-qtsensors,-qtserialbus,-qtserialport
 
+FROM qt_6_2_1_source AS qt_6_2_1_debug
 RUN powershell -NoLogo -Command " \
     mkdir qt-build/debug; \
     cd qt-build/debug; \
